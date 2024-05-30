@@ -1,32 +1,41 @@
 import pygame
 
-# TODO : 체력바 보이게 하기
+
 class Castle(pygame.sprite.Sprite):
-    def __init__(self, image_path, width, height, hp, x, y):
-        super().__init__()
-        self.image = pygame.image.load(image_path)
-        self.image = pygame.transform.scale(self.image, (width, height))
-        self.hp = hp
-        self.x = x
-        self.y = y
-        self.rect = self.image.get_rect(topleft=(x, y))
+  def __init__(self, image_path, width, height, x, y):
+    super().__init__()
     
-    def draw(self, surface):
-        surface.blit(self.image, (self.x, self.y))
+    self.hp = 100
+    self.max_hp = 100
+    self.money = 100
+
+    self.image = pygame.image.load(image_path)
+    self.image = pygame.transform.scale(self.image, (width, height))
+    self.x = x
+    self.y = y
+    self.rect = self.image.get_rect(topleft=(x, y))
     
-    def take_damage(self, damage):
-        self.hp -= damage
-        if self.hp < 0:
-            self.hp = 0
+  def draw(self, surface):
+    surface.blit(self.image, (self.x, self.y))
+    
+  def set_hp(self, hp):
+    self.hp = hp
+    if self.hp < 0:
+      self.hp = 0
+    if self.hp > self.max_hp:
+      self.hp = self.max_hp
+  
+  def set_money(self, money):
+    self.money = money
 
-   # 체력바 그리기        
-    def draw_health_bar(self, surface):
-        bar_length = 100
-        bar_height = 10
-        fill = (self.hp / self.max_hp) * bar_length
-        pygame.draw.rect(surface, WHITE, (self.x, self.y - 20, bar_length, bar_height))
-        pygame.draw.rect(surface, (255, 0, 0), (self.x, self.y - 20, bar_length - fill, bar_height))
+  def add_money(self, money):
+    self.money += money
 
-        #이것만 하면 되니
-        #화면 업데이트 이런것도 표시해놔야 하나
-        #체력 5%씩 깎이는건??
+  def sub_money(self, money):
+    self.money -= money
+    if self.money < 0:
+      self.money = 0
+  
+  def can_buy(self, price):
+    return self.money >= price
+  

@@ -1,9 +1,13 @@
 import pygame
 
+
 from obejcts.background import Background
 from obejcts.ui.button import Button
+from obejcts.ui.money_info import MoneyInfo
+from obejcts.ui.hp_bar import HpBar
 from obejcts.ui.text import Text
 from obejcts.castle import Castle
+
 
 size = [1400, 800]
 BLACK = (0, 0, 0)
@@ -22,7 +26,9 @@ pygame.display.set_caption("Tower Defense")
 screen = pygame.display.set_mode(size)
 
 background = Background("./imgs/background.png", 1400, 800)
-castle = Castle("./imgs/castle.png", 105, 100, 100, 45, 500)
+castle = Castle("./imgs/castle.png", 105, 100, 45, 500)
+hp_bar = HpBar(30, 30, 300, 40, castle.max_hp, castle.hp)
+money_info = MoneyInfo("./imgs/money.png", 50, 50, screen.get_width() - 80, 30, castle.money)
 
 sprites = pygame.sprite.Group()
 sprites.add(background)
@@ -32,7 +38,20 @@ is_start = False
 def init_game():
   global is_start
   sprites.add(castle)
-  is_start = True  
+  is_start = True
+
+def intro_ui(screen):
+  Text(
+    700, 200,
+    "Tower Defense", 72,
+    WHITE
+    ).draw(screen)
+  Button(
+    700, 450,
+    150, 60,
+    "START", 36,
+    BLACK, WHITE, init_game
+    ).draw(screen)
 
 while True:
   df = clock.tick(60)
@@ -41,6 +60,11 @@ while True:
     if event.type == pygame.QUIT:
       pygame.quit()
   
+  # 다음 프레임으로
+  pygame.display.flip()
+  # 60 프레임 고정
+  clock.tick(60)
+  
   # 모든 스프라이트 업데이트
   sprites.update()
   # 모든 스프라이트들 그리기
@@ -48,19 +72,13 @@ while True:
 
   # 시작전 메인화면
   if not is_start:
-    Text(
-      700, 200,
-      "Tower Defense", 72,
-      WHITE
-      ).draw(screen)
-    Button(
-      700, 450,
-      150, 60,
-      "START", 36,
-      BLACK, WHITE, init_game
-      ).draw(screen)
+    intro_ui(screen)
+    continue
 
-  # 다음 프레임으로
-  pygame.display.flip()
-  # 60 프레임 고정
-  clock.tick(60)
+  # hp bar 그리기
+  hp_bar.set_hp(castle.hp)
+  hp_bar.draw(screen)
+
+  # money info 그리기
+  money_info.set_money(castle.money)
+  money_info.draw(screen)
