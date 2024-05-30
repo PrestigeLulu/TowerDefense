@@ -1,7 +1,7 @@
 import pygame
 
 
-class Button:
+class TextButton:
     def __init__(self, x, y, width, height, text, text_size, text_color, button_color, action=None):
         x = x - width // 2
         y = y - height // 2

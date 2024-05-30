@@ -4,7 +4,7 @@ import pygame
 class Castle(pygame.sprite.Sprite):
   def __init__(self, image_path, width, height, x, y):
     super().__init__()
-    
+
     self.hp = 100
     self.max_hp = 100
     self.money = 100
@@ -20,6 +20,20 @@ class Castle(pygame.sprite.Sprite):
     
   def set_hp(self, hp):
     self.hp = hp
+    if self.hp < 0:
+      self.hp = 0
+    if self.hp > self.max_hp:
+      self.hp = self.max_hp
+  
+  def add_hp(self, hp):
+    self.hp += hp
+    if self.hp < 0:
+      self.hp = 0
+    if self.hp > self.max_hp:
+      self.hp = self.max_hp
+  
+  def sub_hp(self, hp):
+    self.hp -= hp
     if self.hp < 0:
       self.hp = 0
     if self.hp > self.max_hp:
