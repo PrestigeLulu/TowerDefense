@@ -13,4 +13,4 @@ class ShopModal:
         rect = pygame.Rect(200, 100, 1000, 600)
         pygame.draw.rect(screen, WHITE, rect)
         topright = rect.topright
-        IconButton(topright[0] - 25, topright[1] + 25, 50, 50, 70, 70, "./imgs/close.png", WHITE, 0, self.close_callback).draw(screen)
+        IconButton(topright[0] - 25, topright[1] + 25, 50, 50, 70, 70, "./imgs/ui/close.png", WHITE, 0, self.close_callback).draw(screen)

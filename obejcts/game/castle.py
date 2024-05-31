@@ -8,7 +8,7 @@ class Castle(pygame.sprite.Sprite):
     self.hp = 100
     self.max_hp = 100
     self.money = 100
-    self.wave = 1
+    self.wave = 0
 
     self.image = pygame.image.load(image_path)
     self.image = pygame.transform.scale(self.image, (width, height))
@@ -54,3 +54,7 @@ class Castle(pygame.sprite.Sprite):
   def can_buy(self, price):
     return self.money >= price
   
+  def reset(self):
+    self.hp = self.max_hp
+    self.money = 100
+    self.wave = 0
