@@ -3,11 +3,12 @@ import pygame
 
 from obejcts.ui.background import Background
 from obejcts.ui.icon_button import IconButton
+from obejcts.ui.shop_modal import ShopModal
 from obejcts.ui.text_button import TextButton
 from obejcts.ui.money_info import MoneyInfo
 from obejcts.ui.hp_bar import HpBar
 from obejcts.ui.text import Text
-from obejcts.castle import Castle
+from obejcts.game.castle import Castle
 from util import BLACK, WHITE
 
 
@@ -24,6 +25,7 @@ screen = pygame.display.set_mode(size)
 
 sprites = pygame.sprite.Group()
 is_start = False
+is_open_shop = False
 
 
 def init_game():
@@ -45,18 +47,49 @@ def intro_ui(screen):
     BLACK, WHITE, init_game
     ).draw(screen)
   
-  
+
+def next_wave():
+  castle.wave += 1
+
+
+next_wave_button = IconButton(
+    screen.get_width() - 80,
+    screen.get_height() - 80,
+    100,
+    100,
+    75,
+    75,
+    "./imgs/next.png",
+    WHITE,
+    200, next_wave)
+
 def draw_ui(screen):
   # 체력바
   HpBar(30, 30, 300, 40, castle.max_hp, castle.hp).draw(screen)
   # 돈 정보
   MoneyInfo("./imgs/money.png", 50, 50, screen.get_width() - 80, 30, castle.money).draw(screen)
+  # 현재 웨이브
+  Text(700, 60, f"Wave: {castle.wave}", 60, WHITE).draw(screen)
   # 상점 버튼
-  IconButton(80, screen.get_height() - 80, 100, 100, 75, 75, "./imgs/shop.png", WHITE, toggle_shop).draw(screen)
+  IconButton(80, screen.get_height() - 80, 100, 100, 75, 75, "./imgs/shop.png", WHITE, 0, open_shop).draw(screen)
+  # 다음 웨이브 버튼
+  next_wave_button.draw(screen)
+  if next_wave_button.is_clicked():
+    next_wave_button.click()
 
 
-def toggle_shop():
-  print("상점 버튼 클릭")
+def open_shop():
+  global is_open_shop
+  is_open_shop = True
+
+
+def close_shop():
+  global is_open_shop
+  is_open_shop = False
+
+
+def show_shop(screen):
+  ShopModal(close_shop).draw(screen)
 
 
 background = Background("./imgs/background.png", 1400, 800)
@@ -88,3 +121,6 @@ while True:
     continue
 
   draw_ui(screen)
+
+  if is_open_shop:
+    show_shop(screen)

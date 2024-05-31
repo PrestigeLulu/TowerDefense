@@ -8,6 +8,7 @@ class Castle(pygame.sprite.Sprite):
     self.hp = 100
     self.max_hp = 100
     self.money = 100
+    self.wave = 1
 
     self.image = pygame.image.load(image_path)
     self.image = pygame.transform.scale(self.image, (width, height))
