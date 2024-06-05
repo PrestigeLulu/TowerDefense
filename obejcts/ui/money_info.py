@@ -2,12 +2,12 @@ import pygame
 
 
 from obejcts.ui.text import Text
-from util import YELLOW
+from util import MONEY, ORANGE
 
 
 class MoneyInfo:
-  def __init__(self, image_path, width, height, x, y, money):
-    self.image = pygame.image.load(image_path)
+  def __init__(self, width, height, x, y, money):
+    self.image = MONEY
     self.image = pygame.transform.scale(self.image, (width, height))
     self.width = width
     self.height = height
@@ -19,7 +19,7 @@ class MoneyInfo:
     Text(
       self.x - 10, self.y + self.height // 2,
       f"{self.money}", 36,
-      YELLOW,
+      ORANGE,
       "midright"
       ).draw(surface)
     surface.blit(self.image, (self.x, self.y))

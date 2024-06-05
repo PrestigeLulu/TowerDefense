@@ -1,7 +1,9 @@
+import time
 import pygame
 
 
-from obejcts.game.zombie.zombie import Zombie
+from obejcts.game.zombie import Zombie
+from obejcts.game.cannon import Cannon
 from obejcts.ui.background import Background
 from obejcts.ui.icon_button import IconButton
 from obejcts.ui.shop_modal import ShopModal
@@ -10,7 +12,7 @@ from obejcts.ui.money_info import MoneyInfo
 from obejcts.ui.hp_bar import HpBar
 from obejcts.ui.text import Text
 from obejcts.game.castle import Castle
-from util import BLACK, RED, WHITE
+from util import BLACK, GRID_SIZE, ICE_CANNON, MONEY, NORMAL_CANNON, RED, ROCEKT_CANNON, SNIPER_CANNON, WHITE
 
 
 size = [1400, 800]
@@ -24,11 +26,14 @@ pygame.display.set_caption("Tower Defense")
 # 화면 크기 설정
 screen = pygame.display.set_mode(size)
 
+zombies = pygame.sprite.Group()
+cannons = pygame.sprite.Group()
 sprites = pygame.sprite.Group()
 is_start = False
 is_game_over = False
 is_open_shop = False
-
+is_build_mode = False
+build = None
 
 def init_game():
   global is_start, is_game_over
@@ -56,9 +61,9 @@ def next_wave():
   normal_zombie = Zombie("./imgs/game/zombie.png", 1350, 100, castle)
   iron_zombie = Zombie("./imgs/game/iron_zombie.png", 1350, 100, castle, 200, 4)
   speed_zombie = Zombie("./imgs/game/speed_zombie.png", 1350, 100, castle, 50, 6)
-  sprites.add(normal_zombie)
-  sprites.add(iron_zombie)
-  sprites.add(speed_zombie)
+  zombies.add(normal_zombie)
+  zombies.add(iron_zombie)
+  zombies.add(speed_zombie)
 
 
 next_wave_button = IconButton(
@@ -77,9 +82,11 @@ def draw_ui(screen):
   # 체력바
   HpBar(30, 30, 300, 40, castle.max_hp, castle.hp).draw(screen)
   # 돈 정보
-  MoneyInfo("./imgs/ui/money.png", 50, 50, screen.get_width() - 80, 30, castle.money).draw(screen)
+  MoneyInfo(50, 50, screen.get_width() - 80, 30, castle.money).draw(screen)
   # 현재 웨이브
   Text(700, 60, f"Wave: {castle.wave}", 60, WHITE).draw(screen)
+  if(is_build_mode):
+    return
   # 상점 버튼
   IconButton(80, screen.get_height() - 80, 100, 100, 75, 75, "./imgs/ui/shop.png", WHITE, 0, open_shop).draw(screen)
   # 다음 웨이브 버튼
@@ -92,12 +99,22 @@ def open_shop():
   global is_open_shop
   is_open_shop = True
 
+def set_build_mode(item_type):
+  global is_build_mode, build, can_build, is_open_shop
+  is_build_mode = True
+  is_open_shop = False
+  build = item_type
+  time.sleep(0.1)
+  can_build = True
+
 
 def game_over():
-  global is_start, is_game_over, is_open_shop
+  global is_start, is_game_over, is_open_shop, is_build_mode, build
   is_start = False
   is_game_over = True
   is_open_shop = False
+  is_build_mode = False
+  build = None
   Text(
     700, 200,
     "Game Over", 72,
@@ -113,7 +130,7 @@ def close_shop():
 
 
 def show_shop(screen):
-  ShopModal(close_shop).draw(screen)
+  ShopModal(close_shop, castle, set_build_mode).draw(screen)
 
 
 background = Background("./imgs/ui/background.png", 1400, 800)
@@ -136,8 +153,13 @@ while True:
   
   # 모든 스프라이트 업데이트
   sprites.update()
-  # 모든 스프라이트들 그리기
+  zombies.update()
+  cannons.update()
+  # 모든 스프라이트 그리기
   sprites.draw(screen)
+  zombies.draw(screen)
+  cannons.draw(screen)
+
 
   # 시작전 메인화면
   if not is_start:
@@ -146,7 +168,53 @@ while True:
 
   draw_ui(screen)
 
-  if is_open_shop:
+  if is_build_mode:
+    mouse_pos = pygame.mouse.get_pos()
+    image = None
+    if build == 'normal':
+      image = NORMAL_CANNON
+    elif build == 'sniper':
+      image = SNIPER_CANNON
+    elif build == 'rocket':
+      image = ROCEKT_CANNON
+    elif build == 'ice':
+      image = ICE_CANNON
+    image = pygame.transform.scale(image, (100, 100))
+    if build == 'sniper':
+      image = pygame.transform.scale(image, (150, 150))
+
+    # 마우스 좌표를 가장 가까운 격자 좌표로 변환
+    grid_x = (mouse_pos[0] // GRID_SIZE) * GRID_SIZE
+    grid_y = (mouse_pos[1] // GRID_SIZE) * GRID_SIZE
+
+    # 격자 좌표를 화면 좌표로 변환
+    screen_x = grid_x + GRID_SIZE // 2
+    screen_y = grid_y + GRID_SIZE // 2
+
+    # 화면에 이미지 그리기
+    if build == 'sniper':
+      screen.blit(image, (screen_x - 75, screen_y - 75))
+    else:
+      screen.blit(image, (screen_x - 50, screen_y - 50))
+
+    # 마우스 클릭시
+    if not can_build:
+      continue
+    click = pygame.mouse.get_pressed()
+    if click[0]:
+      time.sleep(0.1)
+      is_build_mode = False
+      can_build = False
+      if build == 'normal':
+        cannons.add(Cannon(NORMAL_CANNON, screen_x, screen_y, zombies))
+      elif build == 'sniper':
+        sprites.add(Cannon(SNIPER_CANNON, screen_x, screen_y, zombies))
+      elif build == 'rocket':
+        sprites.add(Cannon(ROCEKT_CANNON, screen_x, screen_y, zombies))
+      elif build == 'ice':
+        sprites.add(Cannon(ICE_CANNON, screen_x, screen_y, zombies))
+
+  if is_open_shop and not is_build_mode:
     show_shop(screen)
 
   if castle.hp <= 0:
