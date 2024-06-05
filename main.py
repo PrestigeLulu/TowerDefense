@@ -12,7 +12,7 @@ from obejcts.ui.money_info import MoneyInfo
 from obejcts.ui.hp_bar import HpBar
 from obejcts.ui.text import Text
 from obejcts.game.castle import Castle
-from util import BLACK, GRID_SIZE, ICE_CANNON, MONEY, NORMAL_CANNON, RED, ROCEKT_CANNON, SNIPER_CANNON, WHITE
+from util import BLACK, GRID_SIZE, ICE_CANNON, ICE_CANNON_DISTANCE, NORMAL_CANNON, NORMAL_CANNON_DISTANCE, RED, ROCEKT_CANNON, ROCKET_CANNON_DISTANCE, SNIPER_CANNON, SNIPER_CANNON_DISTANCE, WHITE
 
 
 size = [1400, 800]
@@ -206,13 +206,13 @@ while True:
       is_build_mode = False
       can_build = False
       if build == 'normal':
-        cannons.add(Cannon(NORMAL_CANNON, screen_x, screen_y, zombies))
+        cannons.add(Cannon(NORMAL_CANNON, screen_x, screen_y, zombies, NORMAL_CANNON_DISTANCE))
       elif build == 'sniper':
-        sprites.add(Cannon(SNIPER_CANNON, screen_x, screen_y, zombies))
+        sprites.add(Cannon(SNIPER_CANNON, screen_x, screen_y, zombies, SNIPER_CANNON_DISTANCE))
       elif build == 'rocket':
-        sprites.add(Cannon(ROCEKT_CANNON, screen_x, screen_y, zombies))
+        sprites.add(Cannon(ROCEKT_CANNON, screen_x, screen_y, zombies, ROCKET_CANNON_DISTANCE))
       elif build == 'ice':
-        sprites.add(Cannon(ICE_CANNON, screen_x, screen_y, zombies))
+        sprites.add(Cannon(ICE_CANNON, screen_x, screen_y, zombies, ICE_CANNON_DISTANCE))
 
   if is_open_shop and not is_build_mode:
     show_shop(screen)
