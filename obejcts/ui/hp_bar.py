@@ -1,7 +1,6 @@
 import pygame
 
-
-from util import GRAY, RED
+from color import GRAY, RED
 
 
 class HpBar:
@@ -16,6 +15,3 @@ class HpBar:
   def draw(self, screen):
     pygame.draw.rect(screen, GRAY, [self.x, self.y, self.width, self.height])
     pygame.draw.rect(screen, RED, [self.x, self.y, self.width * (self.hp / self.max_hp), self.height])
-
-  def set_hp(self, hp):
-    self.hp = hp

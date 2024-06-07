@@ -1,38 +1,28 @@
 import math
 import pygame
 
+from config import ZOMBIE_ATTACK, ZOMBIE_GOALS, ZOMBIE_HP, ZOMBIE_SPEED
+from image import ZOMBIE_IMAGE
 from obejcts.ui.hp_bar import HpBar
+from state import CASTLE
 
 
 class Zombie(pygame.sprite.Sprite):
-  def __init__(self, image_path, x, y, castle, hp = 100, speed = 5, attack = 10):
+  def __init__(self, zombie_type, x, y):
     super().__init__()
-    self.image_path = image_path
-    self.image = pygame.image.load(image_path)
+    self.image = ZOMBIE_IMAGE[zombie_type]
     self.image = pygame.transform.scale(self.image, (100, 100))
     self.orig_image = self.image
     self.x = x
     self.y = y
-    self.hp = hp
-    self.max_hp = hp
-    self.castle = castle
-    self.attack = attack
-    self.angle = 0
+    self.hp = ZOMBIE_HP[zombie_type]
+    self.max_hp = self.hp
+    self.attack = ZOMBIE_ATTACK[zombie_type]
+    self.speed = ZOMBIE_SPEED[zombie_type]
+    self.goals = ZOMBIE_GOALS.copy()
     self.rect = self.image.get_rect()
     self.rect.center = (x, y)
-    self.speed = speed
-    self.goals = [
-      (580, 100),
-      (480, 150),
-      (480, 250),
-      (480, 300),
-      (810, 360),
-      (900, 440),
-      (900, 560),
-      (800, 610),
-      (270, 610),
-      (140, 550)
-    ]
+    self.angle = 0
 
   def rotate(self):
     self.image = pygame.transform.rotozoom(self.orig_image, self.angle, 1)
@@ -44,7 +34,7 @@ class Zombie(pygame.sprite.Sprite):
       return
 
     if len(self.goals) == 0:
-      self.castle.sub_hp(self.attack)
+      CASTLE.sub_hp(self.attack)
       self.kill()
       return
     goal = self.goals[0]

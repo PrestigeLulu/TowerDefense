@@ -1,13 +1,14 @@
 import math
 import pygame
 
-from util import ZOMBIES
+from image import BULLET_IMAGE
+from state import ZOMBIES
 
 
 class Bullet(pygame.sprite.Sprite):
-  def __init__(self, zombie, x, y, size, speed, damage):
+  def __init__(self, bullet_type, zombie, x, y, size, speed, damage):
     super().__init__()
-    self.image = pygame.image.load('imgs/game/bullet.png')
+    self.image = BULLET_IMAGE[bullet_type]
     self.image = pygame.transform.scale(self.image, (size, size))
     self.x = x
     self.y = y
@@ -31,8 +32,6 @@ class Bullet(pygame.sprite.Sprite):
     radian = math.radians(angle)
     self.x += self.speed * math.cos(radian)
     self.y -= self.speed * math.sin(radian)
-    if goal[0] - self.speed <= self.x <= goal[0] + self.speed and goal[1] - self.speed <= self.y <= goal[1] + self.speed:
-      self.kill()
 
   def get_angle(self, goal):
     dx = goal[0] - self.x

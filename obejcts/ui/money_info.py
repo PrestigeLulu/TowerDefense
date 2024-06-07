@@ -1,13 +1,13 @@
 import pygame
 
-
+from color import ORANGE
+from image import MONEY_IMAGE
 from obejcts.ui.text import Text
-from util import MONEY, ORANGE
 
 
 class MoneyInfo:
   def __init__(self, width, height, x, y, money):
-    self.image = MONEY
+    self.image = MONEY_IMAGE
     self.image = pygame.transform.scale(self.image, (width, height))
     self.width = width
     self.height = height

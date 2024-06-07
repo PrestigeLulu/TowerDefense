@@ -1,17 +1,18 @@
 import pygame
 
+from config import CASTLE_DEFAULT
+from image import CASTLE_IMAGE
+
 
 class Castle(pygame.sprite.Sprite):
-  def __init__(self, image_path, width, height, x, y):
+  def __init__(self, size, x, y):
     super().__init__()
-
-    self.hp = 100
-    self.max_hp = 100
-    self.money = 99900
+    self.hp = CASTLE_DEFAULT['hp']
+    self.max_hp = self.hp
+    self.money = CASTLE_DEFAULT['money']
     self.wave = 0
-
-    self.image = pygame.image.load(image_path)
-    self.image = pygame.transform.scale(self.image, (width, height))
+    self.image = CASTLE_IMAGE
+    self.image = pygame.transform.scale(self.image, (size, size))
     self.x = x
     self.y = y
     self.rect = self.image.get_rect(topleft=(x, y))
@@ -56,5 +57,5 @@ class Castle(pygame.sprite.Sprite):
   
   def reset(self):
     self.hp = self.max_hp
-    self.money = 100
+    self.money = CASTLE_DEFAULT['money']
     self.wave = 0
