@@ -12,7 +12,7 @@ from obejcts.ui.money_info import MoneyInfo
 from obejcts.ui.hp_bar import HpBar
 from obejcts.ui.text import Text
 from obejcts.game.castle import Castle
-from util import BLACK, GRID_SIZE, ICE_CANNON, ICE_CANNON_DISTANCE, NORMAL_CANNON, NORMAL_CANNON_DISTANCE, RED, ROCEKT_CANNON, ROCKET_CANNON_DISTANCE, SNIPER_CANNON, SNIPER_CANNON_DISTANCE, WHITE
+from util import BLACK, BULLETS, CANNONS, GRID_SIZE, ICE_CANNON, ICE_CANNON_BULLET_SPPED, ICE_CANNON_DAMAGE, ICE_CANNON_DISTANCE, ICE_CANNON_SPPED, NORMAL_CANNON, NORMAL_CANNON_BULLET_SPPED, NORMAL_CANNON_DAMAGE, NORMAL_CANNON_DISTANCE, NORMAL_CANNON_SPPED, RED, ROCEKT_CANNON, ROCKET_CANNON_BULLET_SPPED, ROCKET_CANNON_DAMAGE, ROCKET_CANNON_DISTANCE, ROCKET_CANNON_SPPED, SNIPER_CANNON, SNIPER_CANNON_BULLET_SPPED, SNIPER_CANNON_DAMAGE, SNIPER_CANNON_DISTANCE, SNIPER_CANNON_SPPED, SPRITES, WHITE, ZOMBIES
 
 
 size = [1400, 800]
@@ -26,9 +26,6 @@ pygame.display.set_caption("Tower Defense")
 # 화면 크기 설정
 screen = pygame.display.set_mode(size)
 
-zombies = pygame.sprite.Group()
-cannons = pygame.sprite.Group()
-sprites = pygame.sprite.Group()
 is_start = False
 is_game_over = False
 is_open_shop = False
@@ -37,7 +34,7 @@ build = None
 
 def init_game():
   global is_start, is_game_over
-  sprites.add(castle)
+  SPRITES.add(castle)
   is_start = True
   is_game_over = False
 
@@ -61,9 +58,9 @@ def next_wave():
   normal_zombie = Zombie("./imgs/game/zombie.png", 1350, 100, castle)
   iron_zombie = Zombie("./imgs/game/iron_zombie.png", 1350, 100, castle, 200, 4)
   speed_zombie = Zombie("./imgs/game/speed_zombie.png", 1350, 100, castle, 50, 6)
-  zombies.add(normal_zombie)
-  zombies.add(iron_zombie)
-  zombies.add(speed_zombie)
+  ZOMBIES.add(normal_zombie)
+  ZOMBIES.add(iron_zombie)
+  ZOMBIES.add(speed_zombie)
 
 
 next_wave_button = IconButton(
@@ -121,8 +118,10 @@ def game_over():
     RED
     ).draw(screen)
   castle.reset()
-  sprites.empty()
-
+  SPRITES.empty()
+  ZOMBIES.empty()
+  CANNONS.empty()
+  BULLETS.empty()
 
 def close_shop():
   global is_open_shop
@@ -152,13 +151,15 @@ while True:
   background.draw(screen)
   
   # 모든 스프라이트 업데이트
-  sprites.update()
-  zombies.update()
-  cannons.update()
+  SPRITES.update()
+  ZOMBIES.update()
+  BULLETS.update()
+  CANNONS.update()
   # 모든 스프라이트 그리기
-  sprites.draw(screen)
-  zombies.draw(screen)
-  cannons.draw(screen)
+  SPRITES.draw(screen)
+  ZOMBIES.draw(screen)
+  BULLETS.draw(screen)
+  CANNONS.draw(screen)
 
 
   # 시작전 메인화면
@@ -206,13 +207,13 @@ while True:
       is_build_mode = False
       can_build = False
       if build == 'normal':
-        cannons.add(Cannon(NORMAL_CANNON, screen_x, screen_y, zombies, NORMAL_CANNON_DISTANCE))
+        CANNONS.add(Cannon(NORMAL_CANNON, screen_x, screen_y, NORMAL_CANNON_DISTANCE, NORMAL_CANNON_SPPED, NORMAL_CANNON_BULLET_SPPED, NORMAL_CANNON_DAMAGE))
       elif build == 'sniper':
-        sprites.add(Cannon(SNIPER_CANNON, screen_x, screen_y, zombies, SNIPER_CANNON_DISTANCE))
+        CANNONS.add(Cannon(SNIPER_CANNON, screen_x, screen_y, SNIPER_CANNON_DISTANCE, SNIPER_CANNON_SPPED, SNIPER_CANNON_BULLET_SPPED, SNIPER_CANNON_DAMAGE))
       elif build == 'rocket':
-        sprites.add(Cannon(ROCEKT_CANNON, screen_x, screen_y, zombies, ROCKET_CANNON_DISTANCE))
+        CANNONS.add(Cannon(ROCEKT_CANNON, screen_x, screen_y, ROCKET_CANNON_DISTANCE, ROCKET_CANNON_SPPED, ROCKET_CANNON_BULLET_SPPED, ROCKET_CANNON_DAMAGE))
       elif build == 'ice':
-        sprites.add(Cannon(ICE_CANNON, screen_x, screen_y, zombies, ICE_CANNON_DISTANCE))
+        CANNONS.add(Cannon(ICE_CANNON, screen_x, screen_y, ICE_CANNON_DISTANCE, ICE_CANNON_SPPED, ICE_CANNON_BULLET_SPPED, ICE_CANNON_DAMAGE))
 
   if is_open_shop and not is_build_mode:
     show_shop(screen)
