@@ -19,30 +19,13 @@ class Castle(pygame.sprite.Sprite):
     
   def draw(self, surface):
     surface.blit(self.image, (self.x, self.y))
-    
-  def set_hp(self, hp):
-    self.hp = hp
-    if self.hp < 0:
-      self.hp = 0
-    if self.hp > self.max_hp:
-      self.hp = self.max_hp
   
-  def add_hp(self, hp):
-    self.hp += hp
-    if self.hp < 0:
-      self.hp = 0
-    if self.hp > self.max_hp:
-      self.hp = self.max_hp
-  
-  def sub_hp(self, hp):
+  def damage(self, hp):
     self.hp -= hp
     if self.hp < 0:
       self.hp = 0
     if self.hp > self.max_hp:
       self.hp = self.max_hp
-  
-  def set_money(self, money):
-    self.money = money
 
   def add_money(self, money):
     self.money += money

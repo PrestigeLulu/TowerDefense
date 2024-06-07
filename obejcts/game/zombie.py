@@ -34,7 +34,7 @@ class Zombie(pygame.sprite.Sprite):
       return
 
     if len(self.goals) == 0:
-      CASTLE.sub_hp(self.attack)
+      CASTLE.damage(self.attack)
       self.kill()
       return
     goal = self.goals[0]
