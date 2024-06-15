@@ -16,8 +16,8 @@ ZOMBIE_IMAGE = {
 BULLET_IMAGE = {
   'normal': pygame.image.load('imgs/game/bullet.png'),
   'sniper': pygame.image.load('imgs/game/bullet.png'),
-  'rocket': pygame.image.load('imgs/game/bullet.png'),
-  'ice': pygame.image.load('imgs/game/bullet.png')
+  'rocket': pygame.image.load('imgs/game/rocket_bullet.png'),
+  'ice': pygame.image.load('imgs/game/ice_bullet.png')
 }
 
 BACKGROUND_IMAGE = pygame.image.load('imgs/ui/background.png')

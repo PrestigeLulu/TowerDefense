@@ -8,6 +8,7 @@ from state import ZOMBIES
 class Bullet(pygame.sprite.Sprite):
   def __init__(self, bullet_type, zombie, x, y, size, speed, damage):
     super().__init__()
+    self.bullet_type = bullet_type
     self.image = BULLET_IMAGE[bullet_type]
     self.image = pygame.transform.scale(self.image, (size, size))
     self.x = x
@@ -24,9 +25,17 @@ class Bullet(pygame.sprite.Sprite):
     for zombie in zombies:
       if pygame.sprite.collide_rect(self, zombie):
         zombie.hp -= self.damage
+        if self.bullet_type == 'ice':
+          zombie.slow()
+        if self.bullet_type == 'rocket':
+          pass
         self.kill()
         return
-
+      
+    if self.zombie.hp <= 0:
+      self.kill()
+      return
+    
     goal = (self.zombie.x, self.zombie.y)
     angle = self.get_angle(goal)
     radian = math.radians(angle)

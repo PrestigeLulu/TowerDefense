@@ -1,7 +1,6 @@
 import time
 import pygame
 
-
 from color import BLACK, RED, WHITE
 from config import BULLET_DAMAGE, BULLET_SPEED, CANNON_DISTANCE, CANNON_SPEED, GRID_SIZE, SCREEN_SIZE, TITLE
 from image import CANNON_IMAGE, NEXT_IMAGE, SHOP_IMAGE

@@ -6,7 +6,7 @@ TITLE = 'Zombie Defense'
 
 CASTLE_DEFAULT = {
   'hp': 100,
-  'money': 99999999
+  'money': 10 ** 10
 }
 
 ZOMBIE_HP = {
@@ -25,6 +25,12 @@ ZOMBIE_ATTACK = {
   'normal': 10,
   'speed': 5,
   'iron': 20
+}
+
+ZOMBIE_MONEY = {
+  'normal': 40,
+  'speed': 25,
+  'iron': 80
 }
 
 ZOMBIE_GOALS = [
@@ -69,8 +75,8 @@ BULLET_SPEED = {
 }
 
 BULLET_DAMAGE = {
-  'normal': 50,
+  'normal': 70,
   'sniper': 100,
   'rocket': 50,
-  'ice': 40
+  'ice': 50
 }

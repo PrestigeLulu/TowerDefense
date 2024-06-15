@@ -1,7 +1,7 @@
 import math
 import pygame
 
-from config import ZOMBIE_ATTACK, ZOMBIE_GOALS, ZOMBIE_HP, ZOMBIE_SPEED
+from config import ZOMBIE_ATTACK, ZOMBIE_GOALS, ZOMBIE_HP, ZOMBIE_SPEED, ZOMBIE_MONEY
 from image import ZOMBIE_IMAGE
 from obejcts.ui.hp_bar import HpBar
 from state import CASTLE
@@ -10,14 +10,15 @@ from state import CASTLE
 class Zombie(pygame.sprite.Sprite):
   def __init__(self, zombie_type, x, y):
     super().__init__()
+    self.zombie_type = zombie_type
     self.image = ZOMBIE_IMAGE[zombie_type]
     self.image = pygame.transform.scale(self.image, (100, 100))
     self.orig_image = self.image
     self.x = x
     self.y = y
-    self.hp = ZOMBIE_HP[zombie_type]
+    self.hp = ZOMBIE_HP[zombie_type] * 1.1 ** CASTLE.wave
     self.max_hp = self.hp
-    self.attack = ZOMBIE_ATTACK[zombie_type]
+    self.attack = ZOMBIE_ATTACK[zombie_type] + 2 * CASTLE.wave
     self.speed = ZOMBIE_SPEED[zombie_type]
     self.goals = ZOMBIE_GOALS.copy()
     self.rect = self.image.get_rect()
@@ -31,6 +32,7 @@ class Zombie(pygame.sprite.Sprite):
   def update(self):
     if self.hp <= 0:
       self.kill()
+      CASTLE.add_money(ZOMBIE_MONEY[self.zombie_type])
       return
 
     if len(self.goals) == 0:
@@ -58,3 +60,6 @@ class Zombie(pygame.sprite.Sprite):
     radian = math.atan2(-dy, dx)
     degree = math.degrees(radian)
     return degree
+  
+  def slow(self):
+    self.speed *= 0.5
