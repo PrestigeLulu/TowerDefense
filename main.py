@@ -1,8 +1,11 @@
+import asyncio
+import threading
+import random
 import time
 import pygame
 
-from color import BLACK, RED, WHITE
-from config import BULLET_DAMAGE, BULLET_SPEED, CANNON_DISTANCE, CANNON_SPEED, GRID_SIZE, SCREEN_SIZE, TITLE
+from color import BLACK, GREEN, RED, WHITE
+from config import GRID_SIZE, SCREEN_SIZE, TITLE
 from image import CANNON_IMAGE, NEXT_IMAGE, SHOP_IMAGE
 from obejcts.game.zombie import Zombie
 from obejcts.game.cannon import Cannon
@@ -32,9 +35,11 @@ def init_game():
 
 
 def lobby(screen):
+  IS_WIN = get_win()
+  IS_GAME_OVER = get_game_over()
   Text(
     700, 200,
-    "Tower Defense" if not IS_GAME_OVER else "Game Over", 72,
+    "Game Over" if IS_GAME_OVER else "WIN" if IS_WIN else "Tower Defense", 72,
     WHITE if not IS_GAME_OVER else RED
     ).draw(screen)
   TextButton(
@@ -47,13 +52,17 @@ def lobby(screen):
 
 def next_wave():
   CASTLE.wave += 1
-  normal_zombie = Zombie('normal', 1350, 100)
-  iron_zombie = Zombie('iron', 1350, 100)
-  speed_zombie = Zombie('speed', 1350, 100)
-  ZOMBIES.add(normal_zombie)
-  ZOMBIES.add(iron_zombie)
-  ZOMBIES.add(speed_zombie)
+  for i in range(CASTLE.wave):
+    timer = threading.Timer(0.5 * i, spawn_zombie)
+    timer.start()
+  if CASTLE.wave >= 50:
+    end_game()
 
+
+def spawn_zombie():
+  zombie_type = random.choice(['normal', 'iron', 'speed'])
+  zombie = Zombie(zombie_type, 1350, 100)
+  ZOMBIES.add(zombie)
 
 next_wave_button = IconButton(
   screen.get_width() - 80,
@@ -88,17 +97,20 @@ def open_shop():
   set_open_shop(True)
 
 
-def game_over():
+def end_game(game_over=False):
   set_start(False)
-  set_game_over(True)
+  if game_over:
+    set_game_over(True)
+  else:
+    set_win(True)
   set_open_shop(False)
   set_build_mode(False)
   set_can_build(False)
   set_build_type(None)
   Text(
     700, 200,
-    "Game Over", 72,
-    RED
+    "Game Over" if game_over else "WIN", 72,
+    RED if game_over else GREEN
     ).draw(screen)
   CASTLE.reset()
   SPRITES.empty()
@@ -124,7 +136,7 @@ while True:
   # 모든 스프라이트 업데이트
   SPRITES.update()
   ZOMBIES.update()
-  BULLETS.update()
+  BULLETS.update(screen)
   CANNONS.update()
   # 모든 스프라이트 그리기
   SPRITES.draw(screen)
@@ -181,4 +193,4 @@ while True:
     ShopModal().draw(screen)
 
   if CASTLE.hp <= 0:
-    game_over()
+    end_game(True)

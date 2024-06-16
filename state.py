@@ -5,6 +5,7 @@ from obejcts.game.castle import Castle
 
 IS_START = False
 IS_GAME_OVER = False
+IS_WIN = False
 IS_OPEN_SHOP = False
 IS_BUILD_MODE = False
 CAN_BUILD = False
@@ -34,6 +35,10 @@ def set_build_type(data):
   global BUILD_TYPE
   BUILD_TYPE = data
 
+def set_win(data):
+  global IS_WIN
+  IS_WIN = data
+
 def get_start():
   return IS_START
 
@@ -51,6 +56,9 @@ def get_can_build():
 
 def get_build_type():
   return BUILD_TYPE
+
+def get_win():
+  return IS_WIN
 
 CASTLE = Castle(100, 45, 500)
 

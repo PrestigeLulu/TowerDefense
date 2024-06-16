@@ -19,7 +19,7 @@ class Bullet(pygame.sprite.Sprite):
     self.rect = self.image.get_rect()
     self.rect.center = (x, y)
   
-  def update(self):
+  def update(self, screen):
     self.rect.center = (self.x, self.y)
     zombies = ZOMBIES
     for zombie in zombies:
@@ -28,7 +28,15 @@ class Bullet(pygame.sprite.Sprite):
         if self.bullet_type == 'ice':
           zombie.slow()
         if self.bullet_type == 'rocket':
-          pass
+          # 거리가 200 이내의 좀비들에게 데미지를 줌
+          for zombie in zombies:
+            distance = math.sqrt(
+              (self.x - zombie.x) ** 2 + (self.y - zombie.y) ** 2
+            )
+            if distance < 200:
+              zombie.hp -= self.damage
+          # 폭발 이펙트
+          pygame.draw.circle(screen, (255, 0, 0), (self.x, self.y), 200)
         self.kill()
         return
       
